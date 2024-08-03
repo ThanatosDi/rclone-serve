@@ -4,7 +4,7 @@ networks:
     name: rclone-network
 services:
   rclone-serve:
-    image: rclone/rclone:${RCLONE_VERSION}
+    image: rclone/rclone:${RCLONE_VERSION:-latest}
     restart: on-failure:5
     user: "${UID}:${GID}"
     volumes:
