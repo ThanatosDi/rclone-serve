@@ -1,0 +1,41 @@
+networks:
+  default:
+    driver: bridge
+    name: rclone-network
+services:
+  rclone-serve:
+    image: rclone/rclone
+    restart: on-failure:5
+    user: "${UID}:${GID}"
+    volumes:
+      - ${APP_PATH}/rclone/config:/data/config:ro
+      - ${APP_PATH}/rclone/logs:/data/logs:rw
+      - ${APP_PATH}/rclone/tmp:/data/tmp:rw
+    ports:
+      - ${RCLONE_SERVE_HOST_ADDR}:${RCLONE_ADDR}
+      - ${RCLONE_RC_HOST_ADDR}:${RCLONE_RC_ADDR}
+    networks:
+      - default
+    environment:
+      - RCLONE_CONFIG=${RCLONE_CONFIG:-/data/config/rclone.conf}
+      - RCLONE_VFS_CACHE_MODE=full
+      - RCLONE_VFS_CACHE_MAX_SIZE=${RCLONE_VFS_CACHE_MAX_SIZE:-50m}
+      - RCLONE_CACHE_DIR=${RCLONE_CACHE_DIR:-/data/tmp}
+      - RCLONE_USE=${RCLONE_USE:-webdav}
+      - RCLONE_PASS=${RCLONE_PASS}
+      - RCLONE_ADDR=:${RCLONE_ADDR:-8080}
+      - RCLONE_RC=${RCLONE_RC:-true}
+      - RCLONE_RC_ADDR=:${RCLONE_RC_ADDR:-5572}
+      - RCLONE_RC_ENABLE_METRICS=${RCLONE_RC_ENABLE_METRICS:-true}
+      - RCLONE_EXCLUDE_FROM=${RCLONE_EXCLUDE_FROM:-/data/config/.rcloneignore}
+      - RCLONE_CONFIG_DIR=${RCLONE_CONFIG_DIR:-/data/config}
+      - RCLONE_TEMP_DIR=${RCLONE_TEMP_DIR:-/data/tmp}
+      - RCLONE_LOG_FILE=${RCLONE_LOG_FILE:-/data/logs/rclone.log}
+      - RCLONE_DELETE_EXCLUDED=${RCLONE_DELETE_EXCLUDED:-true}
+      - RCLONE_TRANSFERS=${RCLONE_TRANSFERS:-8}
+      - RCLONE_MULTI_THREAD_STREAMS=${RCLONE_MULTI_THREAD_STREAMS:-8}
+      - RCLONE_CHECKSUM=${RCLONE_CHECKSUM:-true}
+      - RCLONE_CHECKERS=${RCLONE_CHECKERS:-8}
+      - RCLONE_NO_TRAVERSE=${RCLONE_NO_TRAVERSE:-true}
+      - TZ=${TIMEZONE}
+    command: "serve ${RCLONE_PROTOCOL} ${RCLONE_REMOTE}"
