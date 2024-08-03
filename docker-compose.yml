@@ -21,7 +21,7 @@ services:
       - RCLONE_VFS_CACHE_MODE=full
       - RCLONE_VFS_CACHE_MAX_SIZE=${RCLONE_VFS_CACHE_MAX_SIZE:-50m}
       - RCLONE_CACHE_DIR=${RCLONE_CACHE_DIR:-/data/tmp}
-      - RCLONE_USE=${RCLONE_USE:-webdav}
+      - RCLONE_USE=${RCLONE_USE:-rclone}
       - RCLONE_PASS=${RCLONE_PASS}
       - RCLONE_ADDR=:${RCLONE_ADDR:-8080}
       - RCLONE_RC=${RCLONE_RC:-true}
